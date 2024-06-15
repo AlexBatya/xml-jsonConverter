@@ -1,0 +1,30 @@
+QTextEdit#logTextEdit{
+	background-color: rgba(0, 0, 0, 0.1);
+	border-radius: 10px;
+}
+
+QPushButton {
+	background-color: rgba(0, 0, 0, 0.1);
+	padding: 10px 20px;
+	border-radius: 10px;
+	border: none;
+}
+
+QPushButton:hover {
+	background-color: rgba(0, 0, 0, 0.3);
+}
+
+QPushButton:pressed {
+	background-color: rgba(0, 0, 0, 0.5);
+}
+
+QTextEdit{
+	padding: 10px;
+}
+
+QLineEdit#lineEdit{
+	background-color: rgba(0, 0, 0, 0.1);
+	padding: 5px 10px;
+	border-radius: 10px;
+	border: none;
+}

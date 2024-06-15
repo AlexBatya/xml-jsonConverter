@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+<class>MainWindow</class>
+<widget class="QMainWindow" name="MainWindow">
+	<property name="geometry">
+	<rect>
+		<x>0</x>
+		<y>0</y>
+		<width>300</width>
+		<height>400</height>
+	</rect>
+	</property>
+	<property name="windowTitle">
+		<string>MainWindow</string>
+	</property>
+	<widget class="QMenuBar" name="menuBar">
+	<property name="geometry">
+		<rect>
+		<x>0</x>
+		<y>0</y>
+		<width>800</width>
+		<height>21</height>
+		</rect>
+	</property>
+	<widget class="QMenu" name="menuFile">
+		<property name="title">
+			<string>Файл</string>
+		</property>
+		<addaction name="actionOpen"/>
+		<addaction name="actionSelectFolder"/>
+		<addaction name="actionSaveAs"/>
+	</widget>
+	<addaction name="menuFile"/>
+	</widget>
+	<widget class="QStatusBar" name="statusBar"/>
+	<action name="actionOpen">
+	<property name="text">
+		<string>Открыть</string>
+	</property>
+	</action>
+	<action name="actionSelectFolder">
+	<property name="text">
+		<string>Выбрать папку</string>
+	</property>
+	</action>
+	<action name="actionSaveAs">
+	<property name="text">
+		<string>Сохранить как...</string>
+	</property>
+	</action>
+	<widget class="QWidget" name="mainWidget">
+		<layout class="QVBoxLayout" name="vbox">
+			<item>
+				<widget class="QTextEdit" name="logTextEdit">
+					<property name="readOnly">
+						<bool>true</bool>
+					</property>
+					<property name="plainText">
+						<string></string>
+					</property>
+				</widget>
+			</item>
+			<item>
+				<widget class="QLineEdit" name="lineEdit">
+
+				</widget>				
+			</item>
+			<item>
+				<layout class="QHBoxLayout" name="">
+					<item>
+						<widget class="QPushButton" name="button">
+							<property name="text">
+								<string>Старт</string>
+							</property>
+						</widget>
+					</item>
+					<item>
+						<widget class="QPushButton" name="button">
+							<property name="text">
+								<string>Стоп</string>
+							</property>
+						</widget>
+					</item>
+				</layout>	
+			</item>
+		</layout>		
+	</widget>
+</widget>
+<resources/>
+<connections/>
+</ui>
