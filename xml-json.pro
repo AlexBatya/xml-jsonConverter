@@ -11,11 +11,13 @@ CONFIG += c++17
 SOURCES += \
 		src/main.cpp \
 		src/mainwindow.cpp \
-                src/xmljsonconverter.cpp
+		src/widgets/actions.cpp \
+		src/widgets/filehandler.cpp \
 
 HEADERS += \
 		include/mainwindow.h \
-                include/xmljsonconverter.h
+		include/widgets/actions.h \
+		include/widgets/filehandler.h \
 
 FORMS += \
   	ui/mainwindow.ui

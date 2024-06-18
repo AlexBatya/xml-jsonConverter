@@ -1,92 +1,78 @@
 #include "include/mainwindow.h"
 #include "ui_mainwindow.h"
+#include "include/widgets/filehandler.h"
 
-#include <QFileDialog>
 #include <QMessageBox>
-#include <QTextStream>
+#include <QLineEdit>
+#include <QDebug>
+#include <QFileInfo>
 
-MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent)
-    , ui(new Ui::MainWindow)
-    , m_fileOpened(false)
-    , m_folderSelected(false) // Инициализация флага
+MainWindow::MainWindow(QWidget *parent) :
+	QMainWindow(parent),
+	ui(new Ui::MainWindow)
 {
-    ui->setupUi(this);
+	ui->setupUi(this);
 
-    // Подключаем сигнал от действия "Выбрать папку" к слоту
-    connect(ui->actionSelectFolder, &QAction::triggered, this, &MainWindow::on_actionSelectFolder_triggered);
+	// Создаем экземпляр класса FileHandler
+	fileHandler = new FileHandler(this);
+
+	// Подключаем действие "Открыть" к методу openFile у FileHandler
+	connect(ui->actionOpen, &QAction::triggered, this, &MainWindow::openFileHandler);
+	
+	// Подключаем действие "Выбрать папку" к методу openFolder у FileHandler
+	connect(ui->actionSelectFolder, &QAction::triggered, this, &MainWindow::openFolderHandler);
 }
 
 MainWindow::~MainWindow()
 {
-    delete ui;
+	delete ui;
 }
 
-void MainWindow::on_actionOpen_triggered()
+void MainWindow::openWinFile(FileHandler *handler)
 {
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Open XML File"), QString(),
-                                                    tr("XML Files (*.xml)"));
 
-    if (!fileName.isEmpty()) {
-        QFile file(fileName);
-        if (!file.open(QFile::ReadOnly | QFile::Text)) {
-            QMessageBox::warning(this, tr("Error"), tr("Cannot read file %1:\n%2.")
-                                 .arg(QDir::toNativeSeparators(fileName),
-                                      file.errorString()));
-            return;
-        }
+	QString fileName = handler->getFileName(); // Получаем имя файла через метод getFileName()
+	if (!fileName.isEmpty()) {
 
-        // Check if the file has an XML extension
-        if (!fileName.endsWith(".xml", Qt::CaseInsensitive)) {
-            QMessageBox::warning(this, tr("Error"), tr("The selected file is not in XML format."));
-            return;
-        }
-
-        QTextStream in(&file);
-        QString xmlText = in.readAll();
-        file.close();
-
-        // Clear logTextEdit before appending new text
-        ui->logTextEdit->clear();
-
-        // Append to logTextEdit
-        appendToLog(tr("Opened file: ") + fileName);
-
-        // Update current file
-        m_currentFile = fileName;
-        m_fileOpened = true;
-
-        // Установка флага на false после выбора файла
-        m_folderSelected = false;
-    }
+		QFileInfo fileInfo(fileName);
+		QString extension = fileInfo.suffix().toLower();
+		
+		if (extension == "xml" || extension == "json") {
+				QTextEdit *logTextEdit = findChild<QTextEdit*>("logTextEdit");
+				
+				if (logTextEdit) {
+					logTextEdit->setText(fileName);
+				} 
+				else {
+					qDebug() << "QTextEdit с именем 'logTextEdit' не найден!";
+				}
+		} else {
+				qDebug() << "Выбранный файл не является XML или JSON файлом.";
+		}
+	}
 }
 
-void MainWindow::on_actionSelectFolder_triggered()
+void MainWindow::openWinFolder(FileHandler *handler)
 {
-    if (m_folderSelected) {
-        // Если папка уже выбрана, не открываем диалоговое окно повторно
-        return;
-    }
 
-    QString folderPath = QFileDialog::getExistingDirectory(this, tr("Select Directory"),
-                                                          QString(),
-                                                          QFileDialog::ShowDirsOnly
-                                                          | QFileDialog::DontResolveSymlinks);
-    if (!folderPath.isEmpty()) {
-        ui->lineEdit->setText(folderPath);
-        appendToLog(tr("Selected folder: ") + folderPath);
+	QString fileName = handler->getFileName(); // Получаем имя файла через метод getFileName()
+	QLineEdit *lineEdit = findChild<QLineEdit*>("lineEdit");
 
-        // Установка флага на true после выбора папки
-        m_folderSelected = true;
-
-        // Сброс флага открытого файла, если нужно
-        m_fileOpened = false;
-    }
+	if (lineEdit) {
+		lineEdit->setText(fileName);
+	} else {
+		qDebug() << "QLineEdit с именем 'lineEdit' не найден!";
+	}
 }
 
-void MainWindow::appendToLog(const QString &text)
+void MainWindow::openFileHandler()
 {
-    ui->logTextEdit->moveCursor(QTextCursor::End);
-    ui->logTextEdit->insertPlainText(text + "\n");
+	fileHandler->openFile();
+	openWinFile(fileHandler);
 }
 
+void MainWindow::openFolderHandler()
+{
+	fileHandler->openFolder();
+	openWinFolder(fileHandler);
+}
